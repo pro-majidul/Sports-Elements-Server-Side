@@ -36,6 +36,7 @@ async function run() {
 
     const UserCollection = client.db('UsersDB').collection('users');
     const ProductCollection = client.db('UsersDB').collection('products');
+    const BlogsCollection = client.db('UsersDB').collection('blogs');
 
     app.get('/user', async (req, res) => {
       const cursor = UserCollection.find();
@@ -86,6 +87,12 @@ async function run() {
       const result = await ProductCollection.findOne(query);
       res.send(result)
     })
+    app.get('/product/:category', async (req, res) => {
+      const category = req.params.category;
+      const query = { category: category }
+      const result = await ProductCollection.findOne(query);
+      res.send(result)
+    })
 
     app.post('/product', async (req, res) => {
       const newProduct = req.body;
@@ -104,6 +111,18 @@ async function run() {
         }
       }
       const result = await ProductCollection.updateOne(query, UpdateProduct)
+      res.send(result)
+    })
+
+
+    app.get('/blogs' , async(req,res)=>{
+      const cursor = BlogsCollection.find()
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+    app.post('/blogs' , async(req,res)=>{
+      const newItem = req.body;
+      const result = await BlogsCollection.insertOne(newItem)
       res.send(result)
     })
 
