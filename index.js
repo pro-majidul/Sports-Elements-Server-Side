@@ -81,12 +81,26 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
-    app.get('/product/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
-      const result = await ProductCollection.findOne(query);
+    app.get('/product/:email', async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+
+      const query = { useremail: email }
+      console.log(query);
+
+      const cursor = ProductCollection.find(query, {
+        sort: { prize: 1 },
+        projection: { _id: 0, item: 1, category: 1, prize: 1, descriptions: 1 }
+      })
+
+      const result = await cursor.toArray();
       res.send(result)
     })
+
+
+
+
+
     app.get('/product/:category', async (req, res) => {
       const category = req.params.category;
       const query = { category: category }
@@ -115,12 +129,12 @@ async function run() {
     })
 
 
-    app.get('/blogs' , async(req,res)=>{
+    app.get('/blogs', async (req, res) => {
       const cursor = BlogsCollection.find()
       const result = await cursor.toArray();
       res.send(result)
     })
-    app.post('/blogs' , async(req,res)=>{
+    app.post('/blogs', async (req, res) => {
       const newItem = req.body;
       const result = await BlogsCollection.insertOne(newItem)
       res.send(result)
