@@ -1,5 +1,6 @@
-const express = require('express')
-const cors = require('cors')
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const port = process.env.PORT || 5000
@@ -13,12 +14,10 @@ app.get('/', (req, res) => {
 })
 
 
-// KM9d4l5tobndZ5ac 
-// SportsSpar
 
 
 
-const uri = "mongodb+srv://SportsSpar:KM9d4l5tobndZ5ac@cluster0.xihi8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${process.env.User_Name}:${process.env.User_Pass}@cluster0.xihi8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -43,11 +42,36 @@ async function run() {
       res.send(result)
     });
 
-    app.post('/user' , async (req, res)=>{
+    app.get('/user/:email', async (req, res) => {
+
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await UserCollection.findOne(query);
+      res.send(result)
+
+    })
+
+    app.post('/user', async (req, res) => {
       const newUser = req.body;
       const result = await UserCollection.insertOne(newUser);
       res.send(result)
     });
+
+    app.put('/user/:email' , async(req,res)=>{
+      const email = req.params.email;
+      const user = req.body;
+      const query = { email : email}
+      const updateInfo = {
+        $set:{
+          name : user.name,
+          email : user.email,
+          photo : user.photo
+        }
+      }
+      const result = await UserCollection.updateOne(query , updateInfo);
+      res.send(result)
+    })
+
 
 
 
