@@ -37,6 +37,21 @@ async function run() {
     const UserCollection = client.db('UsersDB').collection('users');
     const ProductCollection = client.db('UsersDB').collection('products');
     const BlogsCollection = client.db('UsersDB').collection('blogs');
+    const categoryCollection = client.db('UsersDB').collection('category');
+
+
+    app.get('/category', async (req, res) => {
+      const cursor = categoryCollection.find();
+      const data = await cursor.toArray();
+      res.send(data)
+    })
+
+    app.post('/category', async (req, res) => {
+      const newCategory = req.body;
+
+      const data = await categoryCollection.insertOne(newCategory);
+      res.send(data)
+    })
 
     app.get('/user', async (req, res) => {
       const cursor = UserCollection.find();
@@ -76,8 +91,15 @@ async function run() {
     })
 
 
-    app.get('/product', async (req, res) => {
+    app.get('/products', async (req, res) => {
       const cursor = ProductCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+
+    app.get('/product', async (req, res) => {
+      const cursor = ProductCollection.find().limit(6);
       const result = await cursor.toArray();
       res.send(result)
     })
@@ -89,8 +111,7 @@ async function run() {
       const query = { useremail: email }
 
       const cursor = ProductCollection.find(query, {
-        sort: { prize: 1 },
-        projection: { _id: 0, item: 1, category: 1, prize: 1, descriptions: 1 }
+        sort: { prize: 1 }
       })
 
       const result = await cursor.toArray();
@@ -139,7 +160,7 @@ async function run() {
           price: product.price
         }
       }
-      const result = await ProductCollection.updateOne(query, UpdateProduct , options)
+      const result = await ProductCollection.updateOne(query, UpdateProduct, options)
       res.send(result)
     })
 
