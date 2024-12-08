@@ -157,16 +157,14 @@ async function run() {
       const options = { upsert: true };
       const UpdateProduct = {
         $set: {
-          price: product.price,
+          prize: product.prize,
           photo: product.photo,
           item: product.item,
           category: product.category,
           descriptions: product.descriptions,
           rating: product.rating,
-
           delivery: product.delivery,
           stack: product.stack,
-
           customization: product.customization,
         }
       }
