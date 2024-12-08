@@ -87,7 +87,6 @@ async function run() {
       console.log(email);
 
       const query = { useremail: email }
-      console.log(query);
 
       const cursor = ProductCollection.find(query, {
         sort: { prize: 1 },
@@ -99,23 +98,29 @@ async function run() {
     })
 
 
+
+
+    app.get('/products/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await ProductCollection.findOne(query);
+      res.send(result)
+    })
+
+    app.get('/producted/:category', async (req, res) => {
+      const category = req.params.category;
+      const query = { category: category }
+      const result = await ProductCollection.findOne(query);
+      res.send(result)
+    })
+
+
     app.delete('/product/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await ProductCollection.deleteOne(query);
       res.send(result);
     });
-
-
-
-
-
-    app.get('/product/:category', async (req, res) => {
-      const category = req.params.category;
-      const query = { category: category }
-      const result = await ProductCollection.findOne(query);
-      res.send(result)
-    })
 
     app.post('/product', async (req, res) => {
       const newProduct = req.body;
@@ -128,12 +133,13 @@ async function run() {
       const id = req.params.id;
       const product = req.body;
       const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
       const UpdateProduct = {
         $set: {
           price: product.price
         }
       }
-      const result = await ProductCollection.updateOne(query, UpdateProduct)
+      const result = await ProductCollection.updateOne(query, UpdateProduct , options)
       res.send(result)
     })
 
@@ -143,6 +149,7 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
+
     app.post('/blogs', async (req, res) => {
       const newItem = req.body;
       const result = await BlogsCollection.insertOne(newItem)
