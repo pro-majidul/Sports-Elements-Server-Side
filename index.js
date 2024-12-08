@@ -150,14 +150,24 @@ async function run() {
     });
 
 
-    app.patch('/product/:id', async (req, res) => {
+    app.put('/product/:id', async (req, res) => {
       const id = req.params.id;
       const product = req.body;
       const query = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const UpdateProduct = {
         $set: {
-          price: product.price
+          price: product.price,
+          photo: product.photo,
+          item: product.item,
+          category: product.category,
+          descriptions: product.descriptions,
+          rating: product.rating,
+
+          delivery: product.delivery,
+          stack: product.stack,
+
+          customization: product.customization,
         }
       }
       const result = await ProductCollection.updateOne(query, UpdateProduct, options)
