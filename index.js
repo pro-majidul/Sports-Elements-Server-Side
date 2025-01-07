@@ -99,7 +99,7 @@ async function run() {
 
 
     app.get('/product', async (req, res) => {
-      const cursor = ProductCollection.find().limit(6);
+      const cursor = ProductCollection.find().limit(8);
       const result = await cursor.toArray();
       res.send(result)
     })
